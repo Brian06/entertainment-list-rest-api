@@ -1,0 +1,29 @@
+{
+  "name": "entertainment-list-rest-api",
+  "version": "1.0.0",
+  "description": "REST API for Entertainment List project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Brian06/entertainment-list-rest-api"
+  },
+  "author": "Brian Salazar Sanchez",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-validator": "^6.12.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.12",
+    "prettier": "^2.3.2"
+  }
+}
