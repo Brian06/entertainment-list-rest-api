@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 
 const itemsRoutes = require('./routes/items');
 
@@ -17,4 +18,11 @@ app.use((req, res, next) => {
 app.use('/items', itemsRoutes);
 app.get('/', (req, res) => res.send({ hello: 'World' }));
 
-app.listen(8080);
+mongoose
+  .connect(
+    'mongodb+srv://bsalazar:paramore100@cluster0.jeeb4.mongodb.net/entertainmentList?retryWrites=true&w=majority'
+  )
+  .then(result => {
+    app.listen(8080);
+  })
+  .catch(err => console.log(err));

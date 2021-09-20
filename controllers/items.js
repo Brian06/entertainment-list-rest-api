@@ -1,4 +1,5 @@
 const { validationResult } = require('express-validator');
+const Item = require('../models/item');
 
 exports.getItems = (req, res, next) => {
   res.status(200).json({
@@ -18,12 +19,26 @@ exports.createItem = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ message: 'Validations fails', errors: errors.array() });
   }
-  const { title, type, duration, description } = req.body;
-  res.status(201).json({
-    message: 'Item created successfully',
+  const { title, type, description, durationMinutes, episodes, genres, imgURL } = req.body;
+
+  const item = new Item({
     title,
-    duration,
-    description,
     type,
+    description,
+    durationMinutes,
+    episodes,
+    genres,
+    imgURL,
   });
+
+  item
+    .save()
+    .then(result => {
+      console.log(result);
+      res.status(201).json({
+        message: 'Item created successfully',
+        item: result,
+      });
+    })
+    .catch(err => console.log(err));
 };
