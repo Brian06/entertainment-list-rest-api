@@ -12,10 +12,14 @@ router.get('/items', itemsController.getItems);
 router.post(
   '/item',
   [
-    body('title').isString().notEmpty().trim().isLength({ max: 100 }),
-    body('type').isString().isIn(['Movie', 'TV Serie', 'Anime', 'Game']),
+    body('title').notEmpty().isString().trim().isLength({ min: 1, max: undefined }),
+    body('type').notEmpty().isString().isIn(['Movie', 'TV Serie', 'Anime', 'Game']),
+    body('episodes').notEmpty().isInt({ min: 0 }),
+    // TODO validate optinal properties
   ],
   itemsController.createItem
 );
+
+router.get('/item/:itemId', itemsController.getItem);
 
 module.exports = router;
