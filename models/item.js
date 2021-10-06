@@ -25,7 +25,6 @@ const itemSchema = new Schema(
       type: Number,
       required: true,
       min: [1, 'cant be a negative value'],
-      default: 1,
     },
     genres: {
       type: [String],
@@ -41,7 +40,6 @@ const itemSchema = new Schema(
         userId: {
           type: mongoose.ObjectId,
           required: true,
-          unique: true,
         },
         rate: {
           type: Number,
@@ -56,7 +54,6 @@ const itemSchema = new Schema(
         userId: {
           type: mongoose.ObjectId,
           required: true,
-          unique: true,
         },
       },
     ],
@@ -65,7 +62,6 @@ const itemSchema = new Schema(
         userId: {
           type: mongoose.ObjectId,
           required: true,
-          unique: true,
         },
         username: {
           type: String,
@@ -84,7 +80,6 @@ const itemSchema = new Schema(
             userId: {
               type: mongoose.ObjectId,
               required: true,
-              unique: true,
             },
           },
         ],
