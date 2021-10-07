@@ -2,16 +2,17 @@ const { validationResult } = require('express-validator');
 const Item = require('../models/item');
 
 exports.getItems = (req, res, next) => {
-  res.status(200).json({
-    items: [
-      {
-        type: 'Movie',
-        title: 'Avengers',
-        duration: '90',
-        description: 'super heros movie',
-      },
-    ],
-  });
+  Item.find()
+    .then(items => {
+      res.status(200).json({ message: 'Fetched Items successfully', items });
+    })
+    .catch(err => {
+      const error = err;
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      next(error);
+    });
 };
 
 exports.createItem = (req, res, next) => {
