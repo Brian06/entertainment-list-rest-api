@@ -58,7 +58,7 @@ exports.getItem = async (req, res, next) => {
       error.statusCode = 404;
       throw error;
     }
-    res.status(200).json({ message: 'Item fetched', item });
+    res.status(200).json({ message: 'Fetched Item', item });
   } catch (err) {
     const error = err;
     if (!error.statusCode) {
@@ -98,7 +98,28 @@ exports.updateItem = async (req, res, next) => {
     item.genres = genres;
 
     const updatedItem = await item.save();
-    res.status(200).json({ message: 'Item Updated', updatedItem });
+    res.status(200).json({ message: 'Updated Item', updatedItem });
+  } catch (err) {
+    const error = err;
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
+  }
+};
+
+exports.deleteItem = async (req, res, next) => {
+  try {
+    const { itemId } = req.params;
+    const deleteItem = await Item.findByIdAndDelete(itemId);
+
+    if (!deleteItem) {
+      const error = new Error('Could not find a item');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    res.status(200).json({ message: 'Deleted Item', deleteItem });
   } catch (err) {
     const error = err;
     if (!error.statusCode) {
