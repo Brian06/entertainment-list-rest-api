@@ -3,8 +3,25 @@ const Item = require('../models/item');
 
 exports.getItems = async (req, res, next) => {
   try {
-    const items = await Item.find();
-    res.status(200).json({ message: 'Fetched Items successfully', items });
+    let items;
+    const currentPage = req.query.page;
+    const perPage = 2;
+    const totalItems = await Item.countDocuments();
+    if (!totalItems) {
+      const error = new Error('Could not find a items');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    if (currentPage) {
+      items = await Item.find()
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage);
+      res.status(200).json({ message: 'Fetched Items successfully', items, totalItems });
+    } else {
+      items = await Item.find();
+      res.status(200).json({ message: 'Fetched Items successfully', items });
+    }
   } catch (err) {
     const error = err;
     if (!error.statusCode) {
