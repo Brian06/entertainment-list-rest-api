@@ -19,7 +19,7 @@ const itemSchema = new Schema(
     description: String,
     durationMinutes: {
       type: Number,
-      min: [1, 'cant be a negative value'],
+      min: [0, 'cant be a negative value'],
     },
     episodes: {
       type: Number,
