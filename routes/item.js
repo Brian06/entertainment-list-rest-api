@@ -1,12 +1,12 @@
 const express = require('express');
 const { body } = require('express-validator');
 
-const itemsController = require('../controllers/items');
+const itemController = require('../controllers/item');
 
 const router = express.Router();
 
 // GET /items/items/
-router.get('/items', itemsController.getItems);
+router.get('/items', itemController.getItems);
 
 // POST /items/item
 router.post(
@@ -20,7 +20,7 @@ router.post(
     body('genres').isArray(),
     body('imgURL').isString(),
   ],
-  itemsController.createItem
+  itemController.createItem
 );
 
 router.put(
@@ -34,10 +34,10 @@ router.put(
     body('genres').isArray(),
     body('imgURL').isString(),
   ],
-  itemsController.updateItem
+  itemController.updateItem
 );
 
-router.get('/item/:itemId', itemsController.getItem);
-router.delete('/item/:itemId', itemsController.deleteItem);
+router.get('/item/:itemId', itemController.getItem);
+router.delete('/item/:itemId', itemController.deleteItem);
 
 module.exports = router;

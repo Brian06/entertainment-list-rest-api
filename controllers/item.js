@@ -38,7 +38,7 @@ exports.createItem = async (req, res, next) => {
       const error = new Error('Validations fails, entered data is incorrect');
       error.statusCode = 422;
       error.errors = errors.array();
-      throw error; // TODO: rearch why was an error to have throw error
+      throw error; // TODO: rearch why I get an error removing the try and using next(error) instead of throw
     }
     const { title, type, description, durationMinutes, episodes, imgURL, genres } = req.body;
 

@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 
-const itemsRoutes = require('./routes/items');
+const itemsRoutes = require('./routes/item');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/items', itemsRoutes);
+app.use('/user', userRoutes);
 app.get('/', (req, res) => res.send({ hello: 'World' }));
 
 app.use((error, req, res, next) => {
