@@ -12,23 +12,21 @@ router.put(
     body('email')
       .isEmail()
       .withMessage('Please enter a valid email.')
-      .custom((value, { req }) => {
-        return user.findOne({ email: value }).then(userDoc => {
-          if (userDoc) {
-            return Promise.reject('Email address already exists!');
-          }
-        });
+      .custom(async value => {
+        const userDoc = await user.findOne({ email: value });
+        if (userDoc) {
+          return Promise.reject(new Error('Email address already exists!'));
+        }
       }),
     body('username')
       .notEmpty()
       .isString()
       .withMessage('Please enter a valid username.')
-      .custom((value, { req }) => {
-        return user.findOne({ username: value }).then(userDoc => {
-          if (userDoc) {
-            return Promise.reject('Username already exists');
-          }
-        });
+      .custom(async value => {
+        const userDoc = await user.findOne({ username: value });
+        if (userDoc) {
+          return Promise.reject(new Error('Username already exists'));
+        }
       }),
     body('password').trim().isLength({ min: 5 }),
   ],
