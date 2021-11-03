@@ -2,15 +2,17 @@ const express = require('express');
 const { body } = require('express-validator');
 
 const itemController = require('../controllers/item');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
 // GET /items/items/
-router.get('/items', itemController.getItems);
+router.get('/items', auth, itemController.getItems);
 
 // POST /items/item
 router.post(
   '/item',
+  auth,
   [
     body('title').notEmpty().isString().trim().isLength({ min: 1, max: undefined }),
     body('type').notEmpty().isString().isIn(['Movie', 'TV Serie', 'Anime', 'Game']),
@@ -25,6 +27,7 @@ router.post(
 
 router.put(
   '/item/:itemId',
+  auth,
   [
     body('title').notEmpty().isString().trim().isLength({ min: 1, max: undefined }),
     body('type').notEmpty().isString().isIn(['Movie', 'TV Serie', 'Anime', 'Game']),
@@ -37,7 +40,7 @@ router.put(
   itemController.updateItem
 );
 
-router.get('/item/:itemId', itemController.getItem);
-router.delete('/item/:itemId', itemController.deleteItem);
+router.get('/item/:itemId', auth, itemController.getItem);
+router.delete('/item/:itemId', auth, itemController.deleteItem);
 
 module.exports = router;
