@@ -1,5 +1,7 @@
 const { validationResult } = require('express-validator');
+
 const Item = require('../models/item');
+const Utils = require('../utils/utils');
 
 exports.getItems = async (req, res, next) => {
   try {
@@ -23,46 +25,38 @@ exports.getItems = async (req, res, next) => {
       res.status(200).json({ message: 'Fetched Items successfully', items });
     }
   } catch (err) {
-    const error = err;
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
+    Utils.catchHandleFunction(err, next);
   }
 };
 
 exports.createItem = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = new Error('Validations fails, entered data is incorrect');
+    error.statusCode = 422;
+    error.errors = errors.array();
+    return next(error);
+  }
+  const { title, type, description, durationMinutes, episodes, imgURL, genres } = req.body;
+
+  const item = new Item({
+    title,
+    type,
+    description,
+    durationMinutes,
+    episodes,
+    genres,
+    imgURL,
+  });
+
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      const error = new Error('Validations fails, entered data is incorrect');
-      error.statusCode = 422;
-      error.errors = errors.array();
-      throw error; // TODO: rearch why was an error to have throw error
-    }
-    const { title, type, description, durationMinutes, episodes, imgURL, genres } = req.body;
-
-    const item = new Item({
-      title,
-      type,
-      description,
-      durationMinutes,
-      episodes,
-      genres,
-      imgURL,
-    });
-
     const result = await item.save();
     res.status(201).json({
       message: 'Item created successfully',
       item: result,
     });
   } catch (err) {
-    const error = err;
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
+    Utils.catchHandleFunction(err, next);
   }
 };
 
@@ -77,28 +71,24 @@ exports.getItem = async (req, res, next) => {
     }
     res.status(200).json({ message: 'Fetched Item', item });
   } catch (err) {
-    const error = err;
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
+    Utils.catchHandleFunction(err, next);
   }
 };
 
 exports.updateItem = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error('Validations fails, entered data is incorrect');
+    error.statusCode = 422;
+    error.errors = errors.array();
+    return next(error);
+  }
+
+  const { itemId } = req.params;
+  const { title, type, description, durationMinutes, episodes, imgURL, genres } = req.body;
+
   try {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      const error = new Error('Validations fails, entered data is incorrect');
-      error.statusCode = 422;
-      error.errors = errors.array();
-      throw error; // TODO: rearch why was an error to have throw error
-    }
-
-    const { itemId } = req.params;
-    const { title, type, description, durationMinutes, episodes, imgURL, genres } = req.body;
-
     const item = await Item.findById(itemId);
     if (!item) {
       const error = new Error('Could not find a item');
@@ -117,11 +107,7 @@ exports.updateItem = async (req, res, next) => {
     const updatedItem = await item.save();
     res.status(200).json({ message: 'Updated Item', updatedItem });
   } catch (err) {
-    const error = err;
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
+    Utils.catchHandleFunction(err, next);
   }
 };
 
@@ -138,12 +124,6 @@ exports.deleteItem = async (req, res, next) => {
 
     res.status(200).json({ message: 'Deleted Item', deleteItem });
   } catch (err) {
-    const error = err;
-    if (!error.statusCode) {
-      error.statusCode = 500;
-    }
-    next(error);
+    Utils.catchHandleFunction(err, next);
   }
 };
-
-// TODO refactor the catch code to a single function

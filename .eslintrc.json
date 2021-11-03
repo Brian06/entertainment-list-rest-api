@@ -20,6 +20,8 @@
     "ecmaVersion": "latest"
   },
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "consistent-return": "off",
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }]
   }
 }
