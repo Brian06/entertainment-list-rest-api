@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 
 const itemsRoutes = require('./routes/item');
 const authRoutes = require('./routes/auth');
+const userRoutes = require('./routes/user');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
 
 app.use('/items', itemsRoutes);
 app.use('/auth', authRoutes);
+app.use('/user', userRoutes);
 app.get('/', (req, res) => res.send({ hello: 'World' }));
 
 app.use((error, req, res, next) => {

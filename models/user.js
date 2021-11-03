@@ -22,13 +22,13 @@ const userSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: 'Item',
         },
-        yourRate: Number,
         status: {
           type: String,
           enum: {
             values: ['Watching', 'Completed', 'Plan to Watch', 'Dropped'],
             message: '{VALUE} is not allowed',
           },
+          required: true,
         },
       },
     ],
