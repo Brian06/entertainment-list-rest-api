@@ -3,7 +3,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 const itemsRoutes = require('./routes/item');
-const userRoutes = require('./routes/user');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/items', itemsRoutes);
-app.use('/user', userRoutes);
+app.use('/auth', authRoutes);
 app.get('/', (req, res) => res.send({ hello: 'World' }));
 
 app.use((error, req, res, next) => {

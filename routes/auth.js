@@ -1,8 +1,8 @@
 const express = require('express');
 const { body } = require('express-validator');
 
-const userController = require('../controllers/user');
-const user = require('../models/user');
+const authController = require('../controllers/auth');
+const User = require('../models/user');
 
 const router = express.Router();
 
@@ -13,7 +13,7 @@ router.put(
       .isEmail()
       .withMessage('Please enter a valid email.')
       .custom(async value => {
-        const userDoc = await user.findOne({ email: value });
+        const userDoc = await User.findOne({ email: value });
         if (userDoc) {
           return Promise.reject(new Error('Email address already exists!'));
         }
@@ -23,16 +23,16 @@ router.put(
       .isString()
       .withMessage('Please enter a valid username.')
       .custom(async value => {
-        const userDoc = await user.findOne({ username: value });
+        const userDoc = await User.findOne({ username: value });
         if (userDoc) {
           return Promise.reject(new Error('Username already exists'));
         }
       }),
     body('password').trim().isLength({ min: 5 }),
   ],
-  userController.signup
+  authController.signup
 );
 
-router.post('/login', userController.login);
+router.post('/login', authController.login);
 
 module.exports = router;
