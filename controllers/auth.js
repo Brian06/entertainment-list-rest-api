@@ -32,9 +32,10 @@ exports.signup = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
+  let user;
 
   try {
-    const user = await User.findOne({ email });
+    user = await User.findOne({ email });
 
     if (!user) {
       const error = new Error('A user with this email could not be found!');
@@ -49,19 +50,19 @@ exports.login = async (req, res, next) => {
       error.statusCode = 401;
       throw error;
     }
-
-    const token = jwt.sign(
-      {
-        email: user.email,
-        username: user.username,
-        userId: user._id.toString(),
-      },
-      'twicebestgroupforsure',
-      { expiresIn: '1h' }
-    );
-
-    res.status(200).json({ message: 'Logged in user!', token, userId: user._id.toString() });
   } catch (err) {
     Utils.catchHandleFunction(err, next);
   }
+
+  const token = jwt.sign(
+    {
+      email: user.email,
+      username: user.username,
+      userId: user._id.toString(),
+    },
+    'twicebestgroupforsure',
+    { expiresIn: '1h' }
+  );
+
+  res.status(200).json({ message: 'Logged in user!', token, userId: user._id.toString() });
 };
