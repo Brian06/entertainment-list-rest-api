@@ -33,3 +33,38 @@ exports.addItem = async (req, res, next) => {
     Utils.catchHandleFunction(err, next);
   }
 };
+
+// TODO order by general rate
+exports.getItems = async (req, res, next) => {
+  const { userId } = req;
+  const { status, type } = req.query;
+  let filteredList;
+
+  try {
+    const user = await User.findById(userId).populate({
+      path: 'itemsList',
+      populate: { path: 'item' },
+    });
+    if (!user) {
+      const error = new Error('Could not find an user');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    filteredList = user.itemsList;
+  } catch (err) {
+    Utils.catchHandleFunction(err, next);
+  }
+
+  if (status) {
+    filteredList = filteredList.filter(objectItem => objectItem.status === status);
+  }
+
+  if (type) {
+    filteredList = filteredList.filter(objectItem => {
+      return objectItem.item.type === type;
+    });
+  }
+
+  res.status(200).json({ message: 'fetched items', items: filteredList });
+};

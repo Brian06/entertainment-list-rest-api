@@ -19,4 +19,6 @@ router.put(
   userController.addItem
 );
 
+router.get('/get-items', isAuth, userController.getItems);
+
 module.exports = router;
