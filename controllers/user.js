@@ -43,7 +43,7 @@ exports.getItems = async (req, res, next) => {
   try {
     const user = await User.findById(userId).populate({
       path: 'itemsList',
-      populate: { path: 'item' },
+      populate: { path: 'item' }
     });
     if (!user) {
       const error = new Error('Could not find an user');
@@ -57,11 +57,11 @@ exports.getItems = async (req, res, next) => {
   }
 
   if (status) {
-    filteredList = filteredList.filter(objectItem => objectItem.status === status);
+    filteredList = filteredList.filter((objectItem) => objectItem.status === status);
   }
 
   if (type) {
-    filteredList = filteredList.filter(objectItem => {
+    filteredList = filteredList.filter((objectItem) => {
       return objectItem.item.type === type;
     });
   }

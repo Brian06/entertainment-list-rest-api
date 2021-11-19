@@ -12,7 +12,7 @@ router.put(
     body('email')
       .isEmail()
       .withMessage('Please enter a valid email.')
-      .custom(async value => {
+      .custom(async (value) => {
         const userDoc = await User.findOne({ email: value });
         if (userDoc) {
           return Promise.reject(new Error('Email address already exists!'));
@@ -22,13 +22,13 @@ router.put(
       .notEmpty()
       .isString()
       .withMessage('Please enter a valid username.')
-      .custom(async value => {
+      .custom(async (value) => {
         const userDoc = await User.findOne({ username: value });
         if (userDoc) {
           return Promise.reject(new Error('Username already exists'));
         }
       }),
-    body('password').trim().isLength({ min: 5 }),
+    body('password').trim().isLength({ min: 5 })
   ],
   authController.signup
 );

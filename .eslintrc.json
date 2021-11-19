@@ -22,6 +22,8 @@
   "rules": {
     "prettier/prettier": "error",
     "consistent-return": "off",
-    "no-underscore-dangle": ["error", { "allow": ["_id"] }]
+    "no-underscore-dangle": ["error", { "allow": ["_id"] }],
+    "generator-star-spacing": ["error", { "before": false, "after": true }],
+    "quotes": ["error", "single", { "avoidEscape": true }]
   }
 }

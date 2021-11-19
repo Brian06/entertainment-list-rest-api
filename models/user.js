@@ -6,32 +6,32 @@ const userSchema = new Schema(
   {
     email: {
       type: String,
-      required: true,
+      required: true
     },
     password: {
       type: String,
-      required: true,
+      required: true
     },
     username: {
       type: String,
-      required: true,
+      required: true
     },
     itemsList: [
       {
         item: {
           type: Schema.Types.ObjectId,
-          ref: 'Item',
+          ref: 'Item'
         },
         status: {
           type: String,
           enum: {
             values: ['Watching', 'Completed', 'Plan to Watch', 'Dropped'],
-            message: '{VALUE} is not allowed',
+            message: '{VALUE} is not allowed'
           },
-          required: true,
-        },
-      },
-    ],
+          required: true
+        }
+      }
+    ]
   },
   { timestamps: true }
 );

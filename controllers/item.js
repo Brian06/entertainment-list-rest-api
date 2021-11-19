@@ -46,14 +46,14 @@ exports.createItem = async (req, res, next) => {
     durationMinutes,
     episodes,
     genres,
-    imgURL,
+    imgURL
   });
 
   try {
     const result = await item.save();
     res.status(201).json({
       message: 'Item created successfully',
-      item: result,
+      item: result
     });
   } catch (err) {
     Utils.catchHandleFunction(err, next);

@@ -35,7 +35,7 @@ mongoose
   .connect(
     'mongodb+srv://bsalazar:paramore100@cluster0.jeeb4.mongodb.net/entertainmentList?retryWrites=true&w=majority'
   )
-  .then(result => {
+  .then((result) => {
     app.listen(8080);
   })
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));

@@ -21,7 +21,7 @@ exports.signup = async (req, res, next) => {
     const user = new User({
       email,
       username,
-      password: hashedPassword,
+      password: hashedPassword
     });
     const result = await user.save();
     res.status(201).json({ message: 'user created!', userId: result._id });
@@ -58,7 +58,7 @@ exports.login = async (req, res, next) => {
     {
       email: user.email,
       username: user.username,
-      userId: user._id.toString(),
+      userId: user._id.toString()
     },
     'twicebestgroupforsure',
     { expiresIn: '1h' }

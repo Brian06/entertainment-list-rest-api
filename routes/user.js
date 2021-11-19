@@ -11,10 +11,7 @@ router.put(
   isAuth,
   [
     body('itemId').notEmpty().isString(),
-    body('status')
-      .notEmpty()
-      .isString()
-      .isIn(['Watching', 'Completed', 'Plan to Watch', 'Dropped']),
+    body('status').notEmpty().isString().isIn(['Watching', 'Completed', 'Plan to Watch', 'Dropped'])
   ],
   userController.addItem
 );

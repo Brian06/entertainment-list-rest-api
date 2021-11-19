@@ -20,7 +20,7 @@ router.post(
     body('description').isString(),
     body('durationMinutes').isInt({ min: 0 }),
     body('genres').isArray(),
-    body('imgURL').isString(),
+    body('imgURL').isString()
   ],
   itemController.createItem
 );
@@ -35,7 +35,7 @@ router.put(
     body('description').isString(),
     body('durationMinutes').isInt({ min: 0 }),
     body('genres').isArray(),
-    body('imgURL').isString(),
+    body('imgURL').isString()
   ],
   itemController.updateItem
 );
