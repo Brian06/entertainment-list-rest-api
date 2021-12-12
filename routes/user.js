@@ -17,5 +17,6 @@ router.put(
 );
 
 router.get('/get-items', isAuth, userController.getItems);
+router.put('/remove-item/:itemId', isAuth, userController.removeItem);
 
 module.exports = router;

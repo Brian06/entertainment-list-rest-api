@@ -3,25 +3,32 @@ const { validationResult } = require('express-validator');
 const Item = require('../models/item');
 const Utils = require('../utils/utils');
 
+// TODO order by general rate
 exports.getItems = async (req, res, next) => {
   try {
-    let items;
-    const currentPage = req.query.page;
+    const { type, currentPage } = req.query;
     const perPage = 2;
     const totalItems = await Item.countDocuments();
+    let items;
+    let filterObject;
+
     if (!totalItems) {
       const error = new Error('Could not find a items');
       error.statusCode = 404;
       throw error;
     }
 
+    if (type) {
+      filterObject = { type };
+    }
+
     if (currentPage) {
-      items = await Item.find()
+      items = await Item.find(filterObject)
         .skip((currentPage - 1) * perPage)
         .limit(perPage);
       res.status(200).json({ message: 'Fetched Items successfully', items, totalItems });
     } else {
-      items = await Item.find();
+      items = await Item.find(filterObject);
       res.status(200).json({ message: 'Fetched Items successfully', items });
     }
   } catch (err) {

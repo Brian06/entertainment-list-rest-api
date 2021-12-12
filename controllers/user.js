@@ -68,3 +68,32 @@ exports.getItems = async (req, res, next) => {
 
   res.status(200).json({ message: 'fetched items', items: filteredList });
 };
+
+exports.removeItem = async (req, res, next) => {
+  try {
+    const { userId } = req;
+    const { itemId } = req.params;
+
+    const user = await User.findById(userId).populate({
+      path: 'itemsList',
+      populate: { path: 'item' }
+    });
+
+    if (!user) {
+      const error = new Error('Could not find an user');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const filteredList = user.itemsList.filter((item) => {
+      return item._id.toString() !== itemId;
+    });
+
+    user.itemsList = filteredList;
+    const updatedUser = await user.save();
+
+    res.status(200).json({ message: 'Removed Item', updatedList: updatedUser.itemsList });
+  } catch (err) {
+    Utils.catchHandleFunction(err, next);
+  }
+};
