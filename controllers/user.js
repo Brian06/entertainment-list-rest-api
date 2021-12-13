@@ -97,3 +97,29 @@ exports.removeItem = async (req, res, next) => {
     Utils.catchHandleFunction(err, next);
   }
 };
+
+exports.updateItemStatus = async (req, res, next) => {
+  try {
+    const { userId } = req;
+    const { itemId } = req.params;
+    const { status } = req.body;
+
+    const user = await User.findById(userId).populate({
+      path: 'itemsList',
+      populate: { path: 'item' }
+    });
+
+    if (!user) {
+      const error = new Error('Could not find an user');
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const selectedItem = user.itemsList.find((item) => item._id.toString() === itemId);
+    if (selectedItem) selectedItem.status = status;
+    const updatedUser = await user.save();
+    res.status(200).json({ message: 'Status updated', updatedItem: selectedItem, updatedUser });
+  } catch (err) {
+    Utils.catchHandleFunction(err, next);
+  }
+};
