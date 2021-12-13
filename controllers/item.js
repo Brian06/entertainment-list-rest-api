@@ -134,3 +134,34 @@ exports.deleteItem = async (req, res, next) => {
     Utils.catchHandleFunction(err, next);
   }
 };
+
+exports.updateRate = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error('Validations fails, entered data is incorrect');
+    error.statusCode = 422;
+    error.errors = errors.array();
+    return next(error);
+  }
+
+  try {
+    const { userId } = req;
+    const { itemId } = req.params;
+    const { rate } = req.body;
+    const rateObj = { userId, rate };
+    const item = await Item.findById(itemId);
+    const index = item.rates.findIndex((currentRate) => currentRate.userId.toString() === userId);
+
+    if (index !== -1) {
+      item.rates[index].rate = rate;
+    } else {
+      item.rates.push(rateObj);
+    }
+
+    const updatedItem = await item.save();
+    res.status(200).json({ message: 'Updated Item', updatedItem });
+  } catch (err) {
+    Utils.catchHandleFunction(err, next);
+  }
+};

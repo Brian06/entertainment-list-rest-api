@@ -42,5 +42,11 @@ router.put(
 
 router.get('/item/:itemId', isAuth, itemController.getItem);
 router.delete('/item/:itemId', isAuth, itemController.deleteItem);
+router.put(
+  '/update-rate/:itemId',
+  isAuth,
+  [body('rate').notEmpty().isInt({ min: 1, max: 10 }).withMessage('just valid from 1 to 10')],
+  itemController.updateRate
+);
 
 module.exports = router;
