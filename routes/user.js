@@ -17,7 +17,9 @@ router.put(
 );
 
 router.get('/get-items', isAuth, userController.getItems);
+
 router.put('/remove-item/:itemId', isAuth, userController.removeItem);
+
 router.put(
   '/update-item-status/:itemId',
   isAuth,

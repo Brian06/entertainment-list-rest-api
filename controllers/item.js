@@ -148,15 +148,17 @@ exports.updateRate = async (req, res, next) => {
   try {
     const { userId } = req;
     const { itemId } = req.params;
-    const { rate } = req.body;
+    const { rate, remove } = req.body;
     const rateObj = { userId, rate };
     const item = await Item.findById(itemId);
     const index = item.rates.findIndex((currentRate) => currentRate.userId.toString() === userId);
 
-    if (index !== -1) {
-      item.rates[index].rate = rate;
-    } else {
+    if (index === -1 && !remove) {
       item.rates.push(rateObj);
+    } else if (remove) {
+      item.rates.splice(index, 1);
+    } else {
+      item.rates[index].rate = rate;
     }
 
     const updatedItem = await item.save();

@@ -42,6 +42,7 @@ router.put(
 
 router.get('/item/:itemId', isAuth, itemController.getItem);
 router.delete('/item/:itemId', isAuth, itemController.deleteItem);
+
 router.put(
   '/update-rate/:itemId',
   isAuth,
