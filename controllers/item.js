@@ -266,7 +266,40 @@ exports.editComment = async (req, res, next) => {
       return next(error);
     }
 
-    item.comments.splice(index, index, commentObj);
+    item.comments.splice(index, 1, commentObj);
+    const updatedItem = await item.save();
+    res.status(200).json({ message: 'Updated Item', comments: updatedItem.comments });
+  } catch (err) {
+    Utils.catchHandleFunction(err, next);
+  }
+};
+
+exports.removeComment = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  try {
+    const { userId } = req;
+    const { itemId, commentId } = req.params;
+    const item = await Item.findById(itemId);
+    const index = item.comments.findIndex(
+      (currentComment) => currentComment._id.toString() === commentId
+    );
+
+    if (index === -1) {
+      const error = new Error('comment data not found');
+      error.statusCode = 404;
+      error.errors = errors.array();
+      return next(error);
+    }
+
+    if (item.comments[index].userId.toString() !== userId) {
+      const error = new Error('comment is not from this user');
+      error.statusCode = 404;
+      error.errors = errors.array();
+      return next(error);
+    }
+
+    item.comments.splice(index, 1);
     const updatedItem = await item.save();
     res.status(200).json({ message: 'Updated Item', comments: updatedItem.comments });
   } catch (err) {

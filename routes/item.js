@@ -74,4 +74,6 @@ router.put(
   itemController.editComment
 );
 
+router.delete('/comments/:itemId/:commentId', isAuth, itemController.removeComment);
+
 module.exports = router;
