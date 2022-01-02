@@ -153,12 +153,55 @@ exports.updateRate = async (req, res, next) => {
     const item = await Item.findById(itemId);
     const index = item.rates.findIndex((currentRate) => currentRate.userId.toString() === userId);
 
-    if (index === -1 && !remove) {
-      item.rates.push(rateObj);
-    } else if (remove) {
+    if (remove && index !== -1) {
       item.rates.splice(index, 1);
-    } else {
+    } else if (remove) {
+      const error = new Error('rate data not found');
+      error.statusCode = 404;
+      error.errors = errors.array();
+      return next(error);
+    } else if (index !== -1) {
       item.rates[index].rate = rate;
+    } else {
+      item.rates.push(rateObj);
+    }
+
+    const updatedItem = await item.save();
+    res.status(200).json({ message: 'Updated Item', updatedItem });
+  } catch (err) {
+    Utils.catchHandleFunction(err, next);
+  }
+};
+
+exports.updateLikes = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error('Validations fails, entered data is incorrect');
+    error.statusCode = 422;
+    error.errors = errors.array();
+    return next(error);
+  }
+
+  try {
+    const { userId } = req;
+    const { itemId } = req.params;
+    const { like, remove } = req.body;
+    const likeObj = { userId, like };
+    const item = await Item.findById(itemId);
+    const index = item.likes.findIndex((currentLike) => currentLike.userId.toString() === userId);
+
+    if (remove && index !== -1) {
+      item.likes.splice(index, 1);
+    } else if (remove) {
+      const error = new Error('like data not found');
+      error.statusCode = 404;
+      error.errors = errors.array();
+      return next(error);
+    } else if (index !== -1) {
+      item.likes[index].like = like;
+    } else {
+      item.likes.push(likeObj);
     }
 
     const updatedItem = await item.save();

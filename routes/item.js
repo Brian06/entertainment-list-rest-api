@@ -44,10 +44,20 @@ router.get('/item/:itemId', isAuth, itemController.getItem);
 router.delete('/item/:itemId', isAuth, itemController.deleteItem);
 
 router.put(
-  '/update-rate/:itemId',
+  '/rate/:itemId',
   isAuth,
-  [body('rate').notEmpty().isInt({ min: 1, max: 10 }).withMessage('just valid from 1 to 10')],
+  [
+    body('rate').notEmpty().isInt({ min: 1, max: 10 }).withMessage('just valid from 1 to 10'),
+    body('remove').notEmpty().isBoolean()
+  ],
   itemController.updateRate
+);
+
+router.put(
+  '/likes/:itemId',
+  isAuth,
+  [body('like').notEmpty().isBoolean(), body('remove').notEmpty().isBoolean()],
+  itemController.updateLikes
 );
 
 module.exports = router;
