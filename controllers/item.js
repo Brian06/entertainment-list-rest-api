@@ -212,7 +212,7 @@ exports.updateLikes = async (req, res, next) => {
   }
 };
 
-exports.addComments = async (req, res, next) => {
+exports.addComment = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -231,6 +231,42 @@ exports.addComments = async (req, res, next) => {
     const commentObj = { userId, username: user.username, comment };
 
     item.comments.push(commentObj);
+    const updatedItem = await item.save();
+    res.status(200).json({ message: 'Updated Item', comments: updatedItem.comments });
+  } catch (err) {
+    Utils.catchHandleFunction(err, next);
+  }
+};
+
+exports.editComment = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error('Validations fails, entered data is incorrect');
+    error.statusCode = 422;
+    error.errors = errors.array();
+    return next(error);
+  }
+
+  try {
+    const { userId } = req;
+    const { itemId, commentId } = req.params;
+    const { comment } = req.body;
+    const user = await User.findById(userId);
+    const item = await Item.findById(itemId);
+    const commentObj = { userId, username: user.username, comment };
+    const index = item.comments.findIndex(
+      (currentComment) => currentComment._id.toString() === commentId
+    );
+
+    if (index === -1) {
+      const error = new Error('comment data not found');
+      error.statusCode = 404;
+      error.errors = errors.array();
+      return next(error);
+    }
+
+    item.comments.splice(index, index, commentObj);
     const updatedItem = await item.save();
     res.status(200).json({ message: 'Updated Item', comments: updatedItem.comments });
   } catch (err) {

@@ -64,7 +64,14 @@ router.put(
   '/comments/:itemId',
   isAuth,
   [body('comment').notEmpty().isString()],
-  itemController.addComments
+  itemController.addComment
+);
+
+router.put(
+  '/comments/:itemId/:commentId',
+  isAuth,
+  [body('comment').notEmpty().isString()],
+  itemController.editComment
 );
 
 module.exports = router;
