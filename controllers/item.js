@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 
 const Item = require('../models/item');
+const User = require('../models/user');
 const Utils = require('../utils/utils');
 
 // TODO order by general rate
@@ -206,6 +207,32 @@ exports.updateLikes = async (req, res, next) => {
 
     const updatedItem = await item.save();
     res.status(200).json({ message: 'Updated Item', updatedItem });
+  } catch (err) {
+    Utils.catchHandleFunction(err, next);
+  }
+};
+
+exports.addComments = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    const error = new Error('Validations fails, entered data is incorrect');
+    error.statusCode = 422;
+    error.errors = errors.array();
+    return next(error);
+  }
+
+  try {
+    const { userId } = req;
+    const { itemId } = req.params;
+    const { comment } = req.body;
+    const user = await User.findById(userId);
+    const item = await Item.findById(itemId);
+    const commentObj = { userId, username: user.username, comment };
+
+    item.comments.push(commentObj);
+    const updatedItem = await item.save();
+    res.status(200).json({ message: 'Updated Item', comments: updatedItem.comments });
   } catch (err) {
     Utils.catchHandleFunction(err, next);
   }

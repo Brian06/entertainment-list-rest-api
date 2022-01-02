@@ -81,7 +81,8 @@ const itemSchema = new Schema(
             userId: {
               type: mongoose.ObjectId,
               required: true
-            }
+            },
+            like: Boolean
           }
         ]
       }

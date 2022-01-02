@@ -60,4 +60,11 @@ router.put(
   itemController.updateLikes
 );
 
+router.put(
+  '/comments/:itemId',
+  isAuth,
+  [body('comment').notEmpty().isString()],
+  itemController.addComments
+);
+
 module.exports = router;
