@@ -60,6 +60,8 @@ router.put(
   itemController.updateLikes
 );
 
+router.get('/comments/:itemId', isAuth, itemController.getComments);
+
 router.put(
   '/comments/:itemId',
   isAuth,
