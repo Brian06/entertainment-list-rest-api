@@ -11,14 +11,22 @@ router.put(
   isAuth,
   [
     body('itemId').notEmpty().isString(),
-    body('status')
-      .notEmpty()
-      .isString()
-      .isIn(['Watching', 'Completed', 'Plan to Watch', 'Dropped']),
+    body('status').notEmpty().isString().isIn(['Watching', 'Completed', 'Plan to Watch', 'Dropped'])
   ],
   userController.addItem
 );
 
 router.get('/get-items', isAuth, userController.getItems);
+
+router.put('/remove-item/:itemId', isAuth, userController.removeItem);
+
+router.put(
+  '/update-item-status/:itemId',
+  isAuth,
+  [
+    body('status').notEmpty().isString().isIn(['Watching', 'Completed', 'Plan to Watch', 'Dropped'])
+  ],
+  userController.updateItemStatus
+);
 
 module.exports = router;
