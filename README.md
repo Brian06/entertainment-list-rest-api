@@ -44,7 +44,7 @@ id: ObjectId,
   episodes: Number,
   genre: String,
   img: TODO,
-  general_rate: IT IS TAKEN OUT IN THE DB TODO
+  general_rate: // TODO: IT IS TAKEN OUT IN THE DB 
   rate: [{
     user_Id: ObjectId,
     rate: Number,
