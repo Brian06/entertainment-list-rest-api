@@ -61,7 +61,7 @@ exports.login = async (req, res, next) => {
       userId: user._id.toString()
     },
     'twicebestgroupforsure',
-    { expiresIn: '1h' }
+    { expiresIn: '10h' }
   );
 
   res.status(200).json({ message: 'Logged in user!', token, userId: user._id.toString() });

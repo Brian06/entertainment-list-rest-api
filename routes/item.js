@@ -15,7 +15,7 @@ router.post(
   isAuth,
   [
     body('title').notEmpty().isString().trim().isLength({ min: 1, max: undefined }),
-    body('type').notEmpty().isString().isIn(['Movie', 'TV Serie', 'Anime', 'Game']),
+    body('type').notEmpty().isString().isIn(['movie', 'serie', 'anime', 'game']),
     body('episodes').notEmpty().isInt({ min: 1 }),
     body('description').isString(),
     body('durationMinutes').isInt({ min: 0 }),
@@ -30,7 +30,7 @@ router.put(
   isAuth,
   [
     body('title').notEmpty().isString().trim().isLength({ min: 1, max: undefined }),
-    body('type').notEmpty().isString().isIn(['Movie', 'TV Serie', 'Anime', 'Game']),
+    body('type').notEmpty().isString().isIn(['movie', 'serie', 'anime', 'game']),
     body('episodes').notEmpty().isInt({ min: 1 }),
     body('description').isString(),
     body('durationMinutes').isInt({ min: 0 }),

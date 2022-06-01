@@ -11,7 +11,7 @@ const itemSchema = new Schema(
     type: {
       type: String,
       enum: {
-        values: ['Movie', 'TV Serie', 'Anime', 'Game'],
+        values: ['movie', 'serie', 'anime', 'game'],
         message: '{VALUE} is not allowed'
       },
       require: true
@@ -30,7 +30,7 @@ const itemSchema = new Schema(
       type: [String],
       enum: {
         // prettier-ignore
-        values: ['Horror', 'Short', 'Mystery', 'Fantasy', 'Action', 'Adventure', 'Crime', 'Family', 'Reality-TV', 'History ', 'Western', 'Musical', 'Game-Show', 'Thriller', 'Drama', 'Comedy', 'Sci-Fi', 'Animation', 'Romance', 'Talk-Show', 'Documentary', 'Music', 'News', 'Biography', 'War', 'Sport', 'Sandbox', 'Real-time strategy', 'Shooters', 'Multiplayer online battle arena', 'Role-playing', 'Simulation and sports', 'Puzzlers and party games', 'Action-adventure', 'Survival and horror', 'Platformer', 'Action Role-playing', 'Japan Role-playing'],
+        values: ['horror', 'short', 'mystery', 'fantasy', 'action', 'adventure', 'arime', 'family', 'reality-tv', 'history ', 'western', 'musical', 'game-show', 'thriller', 'drama', 'comedy', 'sci-fi', 'animation', 'romance', 'talk-show', 'documentary', 'music', 'news', 'biography', 'war', 'sport', 'sandbox', 'real-time strategy', 'shooters', 'multiplayer online battle arena', 'role-playing', 'simulation and sports', 'puzzlers and party games', 'action-adventure', 'survival and horror', 'platformer', 'action role-playing', 'japan role-playing'],
         message: '{VALUE} is not allowed'
       }
     },

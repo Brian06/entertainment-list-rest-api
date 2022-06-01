@@ -16,7 +16,7 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
-    itemsList: [
+    movieList: [
       {
         item: {
           type: Schema.Types.ObjectId,
@@ -25,7 +25,55 @@ const userSchema = new Schema(
         status: {
           type: String,
           enum: {
-            values: ['Watching', 'Completed', 'Plan to Watch', 'Dropped'],
+            values: ['watching', 'completed', 'plan to watch', 'dropped'],
+            message: '{VALUE} is not allowed'
+          },
+          required: true
+        }
+      }
+    ],
+    serieList: [
+      {
+        item: {
+          type: Schema.Types.ObjectId,
+          ref: 'Item'
+        },
+        status: {
+          type: String,
+          enum: {
+            values: ['watching', 'completed', 'plan to watch', 'dropped'],
+            message: '{VALUE} is not allowed'
+          },
+          required: true
+        }
+      }
+    ],
+    animeList: [
+      {
+        item: {
+          type: Schema.Types.ObjectId,
+          ref: 'Item'
+        },
+        status: {
+          type: String,
+          enum: {
+            values: ['watching', 'completed', 'plan to watch', 'dropped'],
+            message: '{VALUE} is not allowed'
+          },
+          required: true
+        }
+      }
+    ],
+    gameList: [
+      {
+        item: {
+          type: Schema.Types.ObjectId,
+          ref: 'Item'
+        },
+        status: {
+          type: String,
+          enum: {
+            values: ['watching', 'completed', 'plan to watch', 'dropped'],
             message: '{VALUE} is not allowed'
           },
           required: true

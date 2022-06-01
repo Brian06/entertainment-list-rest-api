@@ -11,7 +11,7 @@ router.put(
   isAuth,
   [
     body('itemId').notEmpty().isString(),
-    body('status').notEmpty().isString().isIn(['Watching', 'Completed', 'Plan to Watch', 'Dropped'])
+    body('status').notEmpty().isString().isIn(['watching', 'completed', 'plan to watch', 'dropped'])
   ],
   userController.addItem
 );
@@ -24,7 +24,7 @@ router.put(
   '/update-item-status/:itemId',
   isAuth,
   [
-    body('status').notEmpty().isString().isIn(['Watching', 'Completed', 'Plan to Watch', 'Dropped'])
+    body('status').notEmpty().isString().isIn(['watching', 'completed', 'plan to watch', 'dropped'])
   ],
   userController.updateItemStatus
 );
