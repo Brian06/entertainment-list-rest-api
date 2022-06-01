@@ -13,44 +13,46 @@ REST API to handle users and entretainment items like movies, animes, tv series,
 ```javascript
 const User = {
   id: ObjectId,
+  email: String,
   username: String,
-  password TODO,
-  type: admin or user, //user by default
-  // I can use it as a rating list looking for items where your rate is greater than -1
-  // It can be a completed list looking if the state is completed
-  // It can be a to watch list searching if the status is to watch/ to play
-  // It can be a currently watching if the state is watching/ playing
-  // TODO: Can it be a good idea at the performance level to have a list for each type since it cant change?
-  your_List: [{
-    id_Item: ObjectId, // with reference, if I modify the title, description, img... I want to see it reflected
-    title: String,
-    img: TODO,
-    description: String,
-    your_rate: Number,
-    type: String, // First everything is shown together, but it can be filtered by only movie, or games, or series or anime
-    status: String,
-    //general_rating  look for how to add this without reference
+  password String,
+  movieList: [{
+    id_Item: ObjectId, // with reference
+    status: String // 'Watching', 'Completed', 'Plan to Watch', 'Dropped'
+  }],
+  serieList: [{
+    id_Item: ObjectId, // with reference
+    status: String // 'Watching', 'Completed', 'Plan to Watch', 'Dropped'
+  }],
+  animeList: [{
+    id_Item: ObjectId, // with reference
+    status: String // 'Watching', 'Completed', 'Plan to Watch', 'Dropped'
+  }],
+  gameList: [{
+    id_Item: ObjectId, // with reference
+    status: String // 'Watching', 'Completed', 'Plan to Watch', 'Dropped'
   }]
 }
 ```
 
 ```javascript
 const Item = {
-id: ObjectId,
+  id: ObjectId,
   type: String, // It can be movie, series, anime, game.
   title: String,    
   description: String,
-  duration: TODO,
+  durationMinutes: Number,
   episodes: Number,
   genre: String,
   img: TODO,
   general_rate: // TODO: IT IS TAKEN OUT IN THE DB 
-  rate: [{
+  rates: [{
     user_Id: ObjectId,
-    rate: Number,
+    rate: Number, // from 1 to 10
   }],
   likes: [{
     user_Id: ObjectI,
+    like: Boolean
   }],
   comments: [{  // Only comments not reviews
     user_Id: ObjectId,
@@ -59,6 +61,7 @@ id: ObjectId,
     username: String,
     likes: [{
       user_Id: ObjectID,
+      like: Boolean
     }],
   }],
 }
@@ -71,7 +74,7 @@ id: ObjectId,
   - https://mongoosejs.com/docs/defaults.html
 
 
-
+- Look for if we want to search for the id of the list or id of the specific item when we need to remove or update an item
 - Look for how to sort(https://mongoosejs.com/docs/api/query.html#query_Query-sort)
 - Get likes of an item (computed from the database), Item should have a new property with number of likes
 - Get rate (computed from database) Item should have a new property with the rate
