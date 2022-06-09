@@ -83,5 +83,4 @@ const Item = {
 - Pagination in comments
 - Likes in comments
 - Sort by generalRate
-- Convert everything to lowercase like Plan to Watch
 
