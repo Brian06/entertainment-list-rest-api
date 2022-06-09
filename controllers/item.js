@@ -5,6 +5,13 @@ const User = require('../models/user');
 const Utils = require('../utils/utils');
 
 // TODO order by general rate
+/**
+ * @description Get all items, can be filter by type and if we send currentPage works with pagination
+ * @param type
+ * @param currentPage
+ * @method GET
+ * @example /items/items
+ */
 exports.getItems = async (req, res, next) => {
   try {
     const { type, currentPage } = req.query;
@@ -37,6 +44,18 @@ exports.getItems = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Add a new item to the database
+ * @param title
+ * @param type
+ * @param description
+ * @param durationMinutes
+ * @param episodes
+ * @param imgURL
+ * @param genres
+ * @method POST
+ * @example /items/item
+ */
 exports.createItem = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -68,6 +87,12 @@ exports.createItem = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Get an item
+ * @param itemId
+ * @method GET
+ * @example /items/item/61493bc8371a75b8d395475b
+ */
 exports.getItem = async (req, res, next) => {
   const { itemId } = req.params;
   try {
@@ -83,6 +108,19 @@ exports.getItem = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Update the info of an item
+ * @param itemId
+ * @param title
+ * @param type
+ * @param description
+ * @param durationMinutes
+ * @param episodes
+ * @param imgURL
+ * @param genres
+ * @method PUT
+ * @example /items/item/61493bc8371a75b8d395475b
+ */
 exports.updateItem = async (req, res, next) => {
   const errors = validationResult(req);
 
@@ -119,6 +157,12 @@ exports.updateItem = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Delete an item
+ * @param itemId
+ * @method DELETE
+ * @example /items/item/6161cafd2befe0be7f48963c
+ */
 exports.deleteItem = async (req, res, next) => {
   try {
     const { itemId } = req.params;
@@ -136,6 +180,16 @@ exports.deleteItem = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Update rate for a specific item
+ * @param userId
+ * @param itemId
+ * @param rate
+ * @param remove
+ * @param userId
+ * @method PUT
+ * @example /items/rate/6148ed414a415a8a46a55b09
+ */
 exports.updateRate = async (req, res, next) => {
   const errors = validationResult(req);
 
@@ -174,6 +228,16 @@ exports.updateRate = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Update likes for a specific item
+ * @param userId
+ * @param itemId
+ * @param like
+ * @param remove
+ * @param userId
+ * @method PUT
+ * @example /items/likes/6148ed414a415a8a46a55b09
+ */
 exports.updateLikes = async (req, res, next) => {
   const errors = validationResult(req);
 
@@ -212,6 +276,12 @@ exports.updateLikes = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Get comments from a specific item
+ * @param itemId
+ * @method GET
+ * @example /items/comments/6148ed414a415a8a46a55b09/
+ */
 exports.getComments = async (req, res, next) => {
   try {
     const { itemId } = req.params;
@@ -229,6 +299,14 @@ exports.getComments = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Add a comment in a specific item
+ * @param userId
+ * @param itemId
+ * @param comment
+ * @method PUT
+ * @example /items/comments/6148ed414a415a8a46a55b09
+ */
 exports.addComment = async (req, res, next) => {
   const errors = validationResult(req);
 
@@ -255,6 +333,15 @@ exports.addComment = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Edit a comment from a specific item
+ * @param userId
+ * @param itemId
+ * @param commentId
+ * @param comment
+ * @method PUT
+ * @example /items/comments/6148ed414a415a8a46a55b09/61d2116f075
+ */
 exports.editComment = async (req, res, next) => {
   const errors = validationResult(req);
 
@@ -291,6 +378,14 @@ exports.editComment = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Remove a comment from a specific item
+ * @param userId
+ * @param itemId
+ * @param commentId
+ * @method DELETE
+ * @example /items/comments/6148ed414a415a8a46a55b09/61d2116f075
+ */
 exports.removeComment = async (req, res, next) => {
   const errors = validationResult(req);
 
