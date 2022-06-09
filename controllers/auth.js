@@ -5,6 +5,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Utils = require('../utils/utils');
 
+/**
+ * @description Add a new user into the database
+ * @param email
+ * @param password
+ * @param username
+ * @example /auth/signup
+ */
 exports.signup = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -30,6 +37,12 @@ exports.signup = async (req, res, next) => {
   }
 };
 
+/**
+ * @description Verify if email and password are correct and create an auth token
+ * @param email
+ * @param password
+ * @example /auth/login
+ */
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
   let user;

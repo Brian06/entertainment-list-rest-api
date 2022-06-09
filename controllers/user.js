@@ -8,6 +8,7 @@ const Utils = require('../utils/utils');
  * @param itemId
  * @param status
  * @param type
+ * @method PUT
  * @example /user/add-item
  */
 exports.addItem = async (req, res, next) => {
@@ -47,6 +48,7 @@ exports.addItem = async (req, res, next) => {
  * @description Get items of any list and any status or all list and all status if type and status are undefined
  * @param status
  * @param type
+ * @method GET
  * @example /user/get-items?status=watching&type=movie
  */
 exports.getItems = async (req, res, next) => {
@@ -82,6 +84,7 @@ exports.getItems = async (req, res, next) => {
  * @description Remove an item from any list
  * @param itemId
  * @param type
+ * @method PUT
  * @example /user/remove-item/6296e275138c81ead836cc59
  */
 exports.removeItem = async (req, res, next) => {
@@ -123,6 +126,7 @@ exports.removeItem = async (req, res, next) => {
  * @param itemId
  * @param status
  * @param type
+ * @method PUT
  * @example /user/update-item-status/61493bde918656f2aae57f6d
  */
 exports.updateItemStatus = async (req, res, next) => {
