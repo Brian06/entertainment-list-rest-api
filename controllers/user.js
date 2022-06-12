@@ -54,23 +54,58 @@ exports.addItem = async (req, res, next) => {
 exports.getItems = async (req, res, next) => {
   const { userId } = req;
   const { status, type } = req.query;
-  const listName = `${type}List`;
+  const listName = type ? `${type}List` : undefined;
   let filteredList;
 
-  try {
-    const user = await User.findById(userId).populate({
-      path: listName,
-      populate: { path: 'item' }
-    });
-    if (!user) {
-      const error = new Error('Could not find an user');
-      error.statusCode = 404;
-      throw error;
-    }
+  if (listName) {
+    try {
+      const user = await User.findById(userId).populate({
+        path: listName,
+        populate: { path: 'item' }
+      });
 
-    filteredList = user[listName];
-  } catch (err) {
-    Utils.catchHandleFunction(err, next);
+      if (!user) {
+        const error = new Error('Could not find an user');
+        error.statusCode = 404;
+        throw error;
+      }
+
+      filteredList = user[listName];
+    } catch (err) {
+      Utils.catchHandleFunction(err, next);
+    }
+  } else {
+    try {
+      const user = await User.findById(userId)
+        .populate({
+          path: 'animeList',
+          populate: { path: 'item' }
+        })
+        .populate({
+          path: 'serieList',
+          populate: { path: 'item' }
+        })
+        .populate({
+          path: 'gameList',
+          populate: { path: 'item' }
+        })
+        .populate({
+          path: 'movieList',
+          populate: { path: 'item' }
+        });
+
+      if (!user) {
+        const error = new Error('Could not find an user');
+        error.statusCode = 404;
+        throw error;
+      }
+
+      filteredList = type
+        ? user[listName]
+        : [...user.animeList, ...user.serieList, ...user.movieList, ...user.gameList];
+    } catch (err) {
+      Utils.catchHandleFunction(err, next);
+    }
   }
 
   if (status) {
@@ -105,7 +140,7 @@ exports.removeItem = async (req, res, next) => {
       throw error;
     }
 
-    const itemIndex = user[listName].findIndex((item) => item._id.toString() === itemId);
+    const itemIndex = user[listName].findIndex((item) => item.item._id.toString() === itemId);
 
     if (itemIndex === -1) {
       const error = new Error('Could not find an item to remove');
@@ -156,7 +191,7 @@ exports.updateItemStatus = async (req, res, next) => {
       throw error;
     }
 
-    const selectedItem = user[listName].find((item) => item._id.toString() === itemId);
+    const selectedItem = user[listName].find((item) => item.item._id.toString() === itemId);
 
     if (!selectedItem) {
       const error = new Error('Could not find an item to update');
