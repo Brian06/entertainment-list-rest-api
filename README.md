@@ -64,23 +64,21 @@ const Item = {
       like: Boolean
     }],
   }],
+  likesAmount: (virtual) Number,
+  dislikesAmount: (virtual) Number,
+  generalRate: (virtual) Number
 }
 ```
 
 ## Pending Items
 
-- Look for how to manage the general average
-  - I can have a general rate and every time a user adds a rate also modify the general rate
-  - https://mongoosejs.com/docs/defaults.html
-
-
-- Look for if we want to search for the id of the list or id of the specific item when we need to remove or update an item
 - Look for how to sort(https://mongoosejs.com/docs/api/query.html#query_Query-sort)
-- Get likes of an item (computed from the database), Item should have a new property with number of likes
-- Get rate (computed from database) Item should have a new property with the rate
+- Sort by generalRate
+- Handle img
 - Refactor function to check errors
 - Edit status, likes, rate in one
 - Pagination in comments
 - Likes in comments
-- Sort by generalRate
+- Probably will need endpoint for actual user rate and like or dislike for an specific item
+
 
