@@ -88,7 +88,32 @@ const itemSchema = new Schema(
       }
     ]
   },
-  { timestamps: true }
+  { timestamps: true, toObject: { virtuals: true }, toJSON: { virtuals: true } }
 );
+
+itemSchema.virtual('likesAmount').get(function () {
+  if (this.likes) {
+    const likes = this.likes.filter((obj) => obj.like === true);
+    return likes.length;
+  }
+  return 0;
+});
+
+itemSchema.virtual('dislikesAmount').get(function () {
+  if (this.likes) {
+    const likes = this.likes.filter((obj) => obj.like === false);
+    return likes.length;
+  }
+  return 0;
+});
+
+itemSchema.virtual('generalRate').get(function () {
+  if (this.rates) {
+    const sum = this.rates.reduce((accumulator, obj) => {
+      return accumulator + obj.rate;
+    }, 0); // initial value is 0
+    return sum / this.rates.length;
+  }
+});
 
 module.exports = mongoose.model('Item', itemSchema);
