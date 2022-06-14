@@ -108,12 +108,13 @@ itemSchema.virtual('dislikesAmount').get(function () {
 });
 
 itemSchema.virtual('generalRate').get(function () {
-  if (this.rates) {
+  if (this.rates.length) {
     const sum = this.rates.reduce((accumulator, obj) => {
       return accumulator + obj.rate;
     }, 0); // initial value is 0
     return sum / this.rates.length;
   }
+  return -1;
 });
 
 module.exports = mongoose.model('Item', itemSchema);

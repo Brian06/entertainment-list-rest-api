@@ -57,6 +57,7 @@ exports.getItems = async (req, res, next) => {
  * @example /items/item
  */
 exports.createItem = async (req, res, next) => {
+  console.log(234);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error('Validations fails, entered data is incorrect');
@@ -64,7 +65,12 @@ exports.createItem = async (req, res, next) => {
     error.errors = errors.array();
     return next(error);
   }
-  const { title, type, description, durationMinutes, episodes, imgURL, genres } = req.body;
+  const { title, type, description, durationMinutes, episodes, genres } = req.body;
+  let imgURL;
+
+  if (req.file) {
+    imgURL = req.file.path;
+  }
 
   const item = new Item({
     title,
