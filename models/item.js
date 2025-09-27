@@ -6,7 +6,7 @@ const itemSchema = new Schema(
   {
     title: {
       type: String,
-      require: true
+      required: true
     },
     type: {
       type: String,
@@ -14,7 +14,7 @@ const itemSchema = new Schema(
         values: ['movie', 'serie', 'anime', 'game'],
         message: '{VALUE} is not allowed'
       },
-      require: true
+      required: true
     },
     description: String,
     durationMinutes: {
@@ -25,6 +25,43 @@ const itemSchema = new Schema(
       type: Number,
       required: true,
       min: [1, 'cant be a negative value']
+    },
+    // Additional metadata
+    releaseDate: Date,
+    status: {
+      type: String,
+      enum: ['ongoing', 'completed', 'upcoming', 'cancelled'],
+      default: 'completed'
+    },
+    // For series/anime - season information
+    season: Number,
+    // For games - platform information
+    platforms: [String],
+    // Studio/Developer/Publisher
+    studio: String,
+    developer: String,
+    publisher: String,
+    // Content rating
+    contentRating: {
+      type: String,
+      enum: [
+        'G',
+        'PG',
+        'PG-13',
+        'R',
+        'NC-17',
+        'TV-Y',
+        'TV-Y7',
+        'TV-G',
+        'TV-PG',
+        'TV-14',
+        'TV-MA',
+        'E',
+        'E10+',
+        'T',
+        'M',
+        'AO'
+      ]
     },
     genres: {
       type: [String],
@@ -58,6 +95,63 @@ const itemSchema = new Schema(
         like: Boolean
       }
     ],
+    // Enhanced review system
+    reviews: [
+      {
+        userId: {
+          type: mongoose.ObjectId,
+          required: true
+        },
+        username: {
+          type: String,
+          required: true
+        },
+        // Review score (1-10)
+        score: {
+          type: Number,
+          required: true,
+          min: [1, 'Score must be between 1 and 10'],
+          max: [10, 'Score must be between 1 and 10']
+        },
+        // Review text
+        reviewText: {
+          type: String,
+          required: true,
+          maxlength: [5000, 'Review cannot exceed 5000 characters']
+        },
+        // Review title/summary
+        title: {
+          type: String,
+          maxlength: [200, 'Review title cannot exceed 200 characters']
+        },
+        // Pros and cons
+        pros: [String],
+        cons: [String],
+        // Would recommend?
+        wouldRecommend: Boolean,
+        // Spoiler warning
+        containsSpoilers: {
+          type: Boolean,
+          default: false
+        },
+        date: {
+          type: Date,
+          default: Date.now
+        },
+        // Helpfulness votes
+        helpfulVotes: [
+          {
+            userId: {
+              type: mongoose.ObjectId,
+              required: true
+            },
+            isHelpful: Boolean
+          }
+        ]
+      }
+    ],
+
+    // Keep legacy comments for backward compatibility
     comments: [
       {
         userId: {
@@ -108,12 +202,56 @@ itemSchema.virtual('dislikesAmount').get(function () {
 });
 
 itemSchema.virtual('generalRate').get(function () {
-  if (this.rates) {
+  if (this.rates && this.rates.length > 0) {
     const sum = this.rates.reduce((accumulator, obj) => {
       return accumulator + obj.rate;
     }, 0); // initial value is 0
     return sum / this.rates.length;
   }
+  return 0;
+});
+
+// Enhanced review system virtuals
+itemSchema.virtual('averageReviewScore').get(function () {
+  if (this.reviews && this.reviews.length > 0) {
+    const sum = this.reviews.reduce((accumulator, review) => {
+      return accumulator + review.score;
+    }, 0);
+    return sum / this.reviews.length;
+  }
+  return 0;
+});
+
+itemSchema.virtual('totalReviews').get(function () {
+  return this.reviews ? this.reviews.length : 0;
+});
+
+itemSchema.virtual('recommendationPercentage').get(function () {
+  if (this.reviews && this.reviews.length > 0) {
+    const recommendCount = this.reviews.filter((review) => review.wouldRecommend === true).length;
+    return (recommendCount / this.reviews.length) * 100;
+  }
+  return 0;
+});
+
+// Combined rating from both old rates and new reviews
+itemSchema.virtual('overallRating').get(function () {
+  let totalScore = 0;
+  let totalCount = 0;
+
+  // Include legacy rates
+  if (this.rates && this.rates.length > 0) {
+    totalScore += this.rates.reduce((sum, rate) => sum + rate.rate, 0);
+    totalCount += this.rates.length;
+  }
+
+  // Include new review scores
+  if (this.reviews && this.reviews.length > 0) {
+    totalScore += this.reviews.reduce((sum, review) => sum + review.score, 0);
+    totalCount += this.reviews.length;
+  }
+
+  return totalCount > 0 ? totalScore / totalCount : 0;
 });
 
 module.exports = mongoose.model('Item', itemSchema);

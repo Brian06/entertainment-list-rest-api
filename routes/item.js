@@ -1,12 +1,57 @@
 const express = require('express');
-const { body } = require('express-validator');
+const { body, query } = require('express-validator');
 
 const itemController = require('../controllers/item');
 const isAuth = require('../middleware/is-auth');
 
 const router = express.Router();
 
-router.get('/items', isAuth, itemController.getItems);
+// Enhanced items endpoint with search and filtering
+router.get(
+  '/items',
+  isAuth,
+  [
+    query('type')
+      .optional()
+      .isString()
+      .isIn(['movie', 'serie', 'anime', 'game'])
+      .withMessage('Invalid type'),
+    query('search')
+      .optional()
+      .isString()
+      .isLength({ min: 1, max: 100 })
+      .withMessage('Search query must be between 1 and 100 characters'),
+    query('genre').optional().isString().withMessage('Genre must be a string'),
+    query('minRating')
+      .optional()
+      .isFloat({ min: 0, max: 10 })
+      .withMessage('Minimum rating must be between 0 and 10'),
+    query('maxRating')
+      .optional()
+      .isFloat({ min: 0, max: 10 })
+      .withMessage('Maximum rating must be between 0 and 10'),
+    query('status')
+      .optional()
+      .isString()
+      .isIn(['ongoing', 'completed', 'upcoming', 'cancelled'])
+      .withMessage('Invalid status'),
+    query('sort')
+      .optional()
+      .isString()
+      .isIn(['title', 'rating', 'date', 'reviews'])
+      .withMessage('Invalid sort option'),
+    query('order')
+      .optional()
+      .isString()
+      .isIn(['asc', 'desc'])
+      .withMessage('Order must be asc or desc'),
+    query('currentPage')
+      .optional()
+      .isInt({ min: 1 })
+      .withMessage('Current page must be a positive integer')
+  ],
+  itemController.getItems
+);
 
 router.post(
   '/item',

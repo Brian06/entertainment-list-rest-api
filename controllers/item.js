@@ -4,41 +4,150 @@ const Item = require('../models/item');
 const User = require('../models/user');
 const Utils = require('../utils/utils');
 
-// TODO order by general rate
 /**
- * @description Get all items, can be filter by type and if we send currentPage works with pagination
- * @param type
- * @param currentPage
+ * @description Get all items with enhanced filtering, search, and sorting
+ * @param type (optional)
+ * @param currentPage (optional)
+ * @param search (optional) - search in title and description
+ * @param genre (optional)
+ * @param minRating (optional)
+ * @param maxRating (optional)
+ * @param status (optional) - ongoing, completed, upcoming, cancelled
+ * @param sort (optional) - 'title', 'rating', 'date', 'reviews'
+ * @param order (optional) - 'asc', 'desc'
  * @method GET
- * @example /items/items
+ * @example /items/items?type=anime&search=naruto&genre=action&sort=rating&order=desc
  */
 exports.getItems = async (req, res, next) => {
   try {
-    const { type, currentPage } = req.query;
-    const perPage = 2;
-    const totalItems = await Item.countDocuments();
-    let items;
-    let filterObject;
+    const {
+      type,
+      currentPage,
+      search,
+      genre,
+      minRating,
+      maxRating,
+      status,
+      sort = 'date',
+      order = 'desc'
+    } = req.query;
 
-    if (!totalItems) {
-      const error = new Error('Could not find a items');
-      error.statusCode = 404;
-      throw error;
-    }
+    const perPage = 12;
+    const filterObject = {};
 
+    // Build filter object
     if (type) {
-      filterObject = { type };
+      filterObject.type = type;
     }
+
+    if (search) {
+      filterObject.$or = [
+        { title: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    if (genre) {
+      filterObject.genres = { $in: [genre] };
+    }
+
+    if (status) {
+      filterObject.status = status;
+    }
+
+    // Get items with filtering
+    let query = Item.find(filterObject);
+
+    // Apply sorting
+    const sortObject = {};
+    switch (sort) {
+      case 'title':
+        sortObject.title = order === 'asc' ? 1 : -1;
+        break;
+      case 'rating':
+        // Note: Virtual fields can't be used in sort, so we'll sort after retrieval
+        break;
+      case 'reviews':
+        // Sort by number of reviews (array length)
+        break;
+      case 'date':
+      default:
+        sortObject.createdAt = order === 'asc' ? 1 : -1;
+        break;
+    }
+
+    if (Object.keys(sortObject).length > 0) {
+      query = query.sort(sortObject);
+    }
+
+    // Get total count for pagination
+    const totalItems = await Item.countDocuments(filterObject);
+
+    if (totalItems === 0) {
+      return res.status(200).json({
+        message: 'No items found matching your criteria',
+        items: [],
+        totalItems: 0,
+        totalPages: 0,
+        currentPage: currentPage ? parseInt(currentPage) : 1
+      });
+    }
+
+    let items;
+    if (currentPage) {
+      items = await query.skip((currentPage - 1) * perPage).limit(perPage);
+    } else {
+      items = await query;
+    }
+
+    // Apply rating filter and sorting for virtual fields after retrieval
+    if (minRating || maxRating || sort === 'rating' || sort === 'reviews') {
+      if (minRating) {
+        items = items.filter((item) => (item.overallRating || 0) >= parseFloat(minRating));
+      }
+      if (maxRating) {
+        items = items.filter((item) => (item.overallRating || 0) <= parseFloat(maxRating));
+      }
+
+      // Sort by virtual fields
+      if (sort === 'rating') {
+        items.sort((a, b) => {
+          const aRating = a.overallRating || 0;
+          const bRating = b.overallRating || 0;
+          return order === 'asc' ? aRating - bRating : bRating - aRating;
+        });
+      } else if (sort === 'reviews') {
+        items.sort((a, b) => {
+          const aReviews = a.totalReviews || 0;
+          const bReviews = b.totalReviews || 0;
+          return order === 'asc' ? aReviews - bReviews : bReviews - aReviews;
+        });
+      }
+    }
+
+    const response = {
+      message: 'Fetched items successfully',
+      items,
+      totalItems: items.length,
+      filters: {
+        type,
+        search,
+        genre,
+        minRating,
+        maxRating,
+        status,
+        sort,
+        order
+      }
+    };
 
     if (currentPage) {
-      items = await Item.find(filterObject)
-        .skip((currentPage - 1) * perPage)
-        .limit(perPage);
-      res.status(200).json({ message: 'Fetched Items successfully', items, totalItems });
-    } else {
-      items = await Item.find(filterObject);
-      res.status(200).json({ message: 'Fetched Items successfully', items });
+      response.totalPages = Math.ceil(totalItems / perPage);
+      response.currentPage = parseInt(currentPage);
+      response.perPage = perPage;
     }
+
+    res.status(200).json(response);
   } catch (err) {
     Utils.catchHandleFunction(err, next);
   }
